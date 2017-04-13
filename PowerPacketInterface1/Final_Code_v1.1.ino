@@ -16,12 +16,6 @@ vector<float> currentDataBuffer;
 vector<float> powerDataBuffer;
 #define timeBetweenSamples 1000 //CHANGE THIS NUMBER BASED ON HOW OFTEN SAMPLES ARE COLLECTED (MAKE SURE TO NOTE UNITS)
 
-//Some declarations for the current sensor module
-int mVperAmp = 185; // use 185 for 5A Module, 100 for 20A Module and 66 for 30A Module
-int RawValue= 0;
-int ACSoffset = 2500; 
-float Voltage = 0;
-
 //Define which pins on the arduino board will control which output lines on the relay module board CHANGE THESE DEPENDING ON HOW RELAYS ARE PLUGGED IN
 #define relayOut1  7
 #define relayOut2  6
@@ -129,8 +123,7 @@ float getVoltageReading(){
  */
 float getCurrentReading(){
   RawValue = analogRead(currentSensPin);
-  Voltage = (RawValue / 1023.0) * 5000; // Gets you mV
-  float iSensorVal = ((Voltage - ACSoffset) / mVperAmp);
+  float iSensorVal = (RawValue - 327.94) / (-22.953);
   return iSensorVal;
 }
 
