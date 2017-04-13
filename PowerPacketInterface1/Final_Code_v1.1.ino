@@ -23,6 +23,7 @@ vector<float> powerDataBuffer;
 #define relayOut4  4
 #define voltageSensPin 1  //CHANGE THIS NUMBER BASED ON WHAT PIN THE VOLTAGE SENSOR IS CONNECTED TO
 #define currentSensPin 2 //CHANGE THIS NUMBER BASED ON WHAT PIN THE CURRENT SENSOR IS CONNECTED TO
+#define SoCPin 3        //CHANGE THIS NUMBER BASED ON WHAT PIN THE VOLTAGE SENSOR ATTACHED TO THE BATTERY IS
 
 
 void setup() {
@@ -113,8 +114,8 @@ if (Serial.available() > 0) {
  * @Return (a sensor reading from the analog voltage sensor in the form of a float)
  */
 float getVoltageReading(){
-  float vSensorVal = analogRead(voltageSensPin);
-  vSensorVal = vSensorVal / 40.4;
+  float rawVal = analogRead(voltageSensPin);
+  float vSensorVal = (rawVal + 3.3529) / 41.844;
   return vSensorVal;
 }
 
@@ -176,5 +177,13 @@ float getAvgValue(vector<float> const &Buffer){
   }
   float avg = accumulator / Buffer.size();
   return avg;
+}
+
+float getSoC(){
+  float rawValue = analogRead(SoCPin);
+  float vSensorVal = (rawVal + 3.3529) / 41.844;
+  float SoC = (vSensorVal * .3571) - 4.8571;    // State of charge is a float between 0 and 1
+  SoC = SoC * 100;  // Percentage Value
+  return SoC;
 }
 
